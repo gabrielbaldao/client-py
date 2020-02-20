@@ -13,19 +13,19 @@ class Auth(object):
         return { 'auth': { 'access_key': self.access_key, 'answer': signature } }
 
     def signed_params(self, verb, path, params = {}):
-        params = self.format_params(params)
+        params = self.__format_params(params)
 
-        signature = self.sign(verb, path, urllib.urlencode(params))
+        signature = self.__sign(verb, path, urllib.urlencode(params))
         params['signature'] = signature #TODO FIX THIS SIGNATURE
         return params
 
-    def sign(self, verb, path, params):
-        return hashlib.pbkdf2_hmac('sha256', self.secret_key, self.payload(verb, path, params), 100000)
+    def __sign(self, verb, path, params):
+        return hashlib.pbkdf2_hmac('sha256', self.secret_key, self.__payload(verb, path, params), 100000)
 
-    def payload(self, verb, path, params):
+    def __payload(self, verb, path, params):
         return "#{verb}|#{path}|#{params}".format(verb = verb.upper(), path = path, params = params)
 
-    def format_params(self, params):
+    def __format_params(self, params):
         params['access_key'] = self.access_key
-        params['tonce'] = int(time.time()) * 1000
+        params['tonce'] = int(time.time()) * 10000
         return params

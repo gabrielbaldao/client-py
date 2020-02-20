@@ -12,7 +12,7 @@ class StreamingClient(Client):
         self.endpoint = options['endpoint'] if 'endpoint' in options.keys() else 'wss://omnitrade.com:8080' 
         self.logger   = options['logger'] if 'logger' in options.keys() else 'Logger' #Logger(STDOUT)
         websocket.enableTrace(True)
-        self.ws = websocket.WebSocketApp("ws://localhost:8765/",
+        self.ws = websocket.WebSocketApp(self.endpoint,
                                 on_message  =   self.on_message,
                                 on_error    =   self.on_error,
                                 on_close    =   self.on_close)
@@ -38,8 +38,4 @@ class StreamingClient(Client):
         print("thread terminating...")
         thread.start_new_thread(run, ())
 
-
-
-sc = StreamingClient({'endpoint': 'ws://localhost:8765'})
-sc.on_message('asd')
 

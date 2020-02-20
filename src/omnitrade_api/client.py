@@ -4,7 +4,7 @@ import urllib
 from auth import Auth
 from ordered_dict import ordered_dict
 
-OMNITRADE_URL = 'http://localhost:5000/' #'https://omnitrade.io'
+OMNITRADE_URL = 'https://omnitrade.io'
 class Client(object):
     def __init__(self, options={}):
         global OMNITRADE_URL

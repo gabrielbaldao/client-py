@@ -27,5 +27,5 @@ class Auth(object):
 
     def __format_params(self, params):
         params['access_key'] = self.access_key
-        params['tonce'] = int(time.time()) * 10000
+        params['tonce'] = int(time.time()) * 1000
         return params

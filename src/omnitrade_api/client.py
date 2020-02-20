@@ -1,18 +1,21 @@
 import requests
 import json
+import urllib
+from collections import OrderedDict
 from auth import Auth
 
 OMNITRADE_URL = 'https://omnitrade.io'
 class Client(object):
     def __init__(self, options={}):
         global OMNITRADE_URL
+        self.auth = None
         self.setup_auth_keys(options)
 
         self.endpoint  = options['endpoint'] if 'endpoint' in options.keys() else OMNITRADE_URL
         self.timeout   =  options['timeout'] if 'timeout' in options.keys() else 60 
 
     def get_public(self, path, params={}):
-        uri = self.parameters('GET',path, params)
+        uri, params = self.parameters('GET',path, params)
 
         return self.get_request(uri, params)
 
@@ -43,12 +46,18 @@ class Client(object):
             raise Exception('Missing access key and/or secret key')
     
     def get_request(self, uri, params):
-        return requests.get(uri,data = params).json()
+        return requests.get(uri, params = urllib.urlencode(params))
 
     def post_request(self, uri, params):
-        return requests.post(uri,data = params).json()
+        return requests.post(uri, params = json.dumps(params))
 
     def parameters(self, action, path, params):
         uri = '{endpoint}{path}'.format(endpoint=self.endpoint, path=path)
-        params = self.auth.signed_params(action, path, params) if self.auth else params
-        return uri, params
+        dict_params = self.auth.signed_params(action, path, params) if self.auth != None else params
+        list_params = map(lambda key,value: (key, value), dict_params.keys(), dict_params.values())
+        list_params.sort(key=self.take_key)
+
+        return uri, list_params
+
+    def take_key(self, item):
+        return item[0]

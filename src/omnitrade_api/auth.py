@@ -14,9 +14,9 @@ class Auth(object):
 
     def signed_params(self, verb, path, params = {}):
         params = self.format_params(params)
-        signature = self.sign(verb, path, params)#urllib.unquote(params.to_query))
-        signature = 'asdasdasdas'
-        params['signature'] = signature
+
+        signature = self.sign(verb, path, urllib.urlencode(params))
+        params['signature'] = signature #TODO FIX THIS SIGNATURE
         return params
 
     def sign(self, verb, path, params):

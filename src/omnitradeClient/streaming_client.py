@@ -6,12 +6,16 @@ from client import Client
 
 logging.basicConfig(level=logging.INFO)
 
+OMNITRADE_URL = 'wss://omnitrade.com:8080' 
 class StreamingClient(Client):
     def __init__(self, callback, options = {}):
+        global OMNITRADE_URL
         super(StreamingClient, self).__init__(options)
-        self.endpoint = options['endpoint'] if 'endpoint' in options.keys() else 'wss://omnitrade.com:8080' 
+        self.endpoint = options['endpoint'] if 'endpoint' in options.keys() else OMNITRADE_URL
         self.logger   = options['logger'] if 'logger' in options.keys() else logging
+
         websocket.enableTrace(True)
+
         self.callback = callback
         self.ws = websocket.WebSocketApp(self.endpoint,
                                 on_message  =   self.on_message,

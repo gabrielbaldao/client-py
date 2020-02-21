@@ -1,5 +1,5 @@
 import unittest
-from omnitrade_api.auth import Auth
+from omnitradeClient.auth import Auth
 
 ACCESS_KEY = '123456'
 SECRET_KEY = '123456'

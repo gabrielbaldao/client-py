@@ -1,11 +1,10 @@
 
 from setuptools import find_packages
 from setuptools import setup
-# from distutils.core import setup
 
 setup(
     name="omnitradeClient",
-    version="0.1",
+    version="0.2",
     license="MIT license",
     description="Python client for Omnitrade API",
     author="Omnitrade",

@@ -1,5 +1,5 @@
 import unittest
-from omnitrade_api.ordered_dict import ordered_dict
+from omnitradeClient.ordered_dict import ordered_dict
 
 class TestOrderedDictMethods(unittest.TestCase):
 

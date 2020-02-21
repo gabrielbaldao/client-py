@@ -3,7 +3,7 @@ import json
 from nose.tools import assert_is_none, assert_list_equal
 from mock import patch, Mock
 
-from omnitrade_api.client import Client
+from omnitradeClient.client import Client
 
 OMNITRADE_URL = 'https://omnitrade.io'
 class TestClientMethods(unittest.TestCase):

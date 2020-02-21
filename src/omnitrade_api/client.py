@@ -1,12 +1,12 @@
 import requests
-import json
 import urllib
 from auth import Auth
 from ordered_dict import ordered_dict
 
-OMNITRADE_URL = 'http://localhost:5000'#'https://omnitrade.io'
+OMNITRADE_URL = 'https://omnitrade.io'
 class Client(object):
     def __init__(self, options={}):
+        print("Initialize")
         global OMNITRADE_URL
         self.auth = None
         self.__setup_auth_keys(options)
@@ -16,7 +16,6 @@ class Client(object):
 
     def get_public(self, path, params={}):
         uri, params = self.__parameters('GET',path, params)
-
         return self.__get_request(uri, params)
 
 
@@ -49,14 +48,10 @@ class Client(object):
         return requests.get(uri, params = urllib.urlencode(params))
 
     def __post_request(self, uri, params):
-        print(uri)
-        print(params)
         return requests.post(uri, params = urllib.urlencode(params))
 
     def __parameters(self, action, path, params):
         uri = '{endpoint}{path}'.format(endpoint=self.endpoint, path=path)
-        print('Com auth\n')
-        print(self.auth.signed_params(action, path, params))
         dict_params = self.auth.signed_params(action, path, params) if self.auth != None else params
 
         return uri, ordered_dict(dict_params)

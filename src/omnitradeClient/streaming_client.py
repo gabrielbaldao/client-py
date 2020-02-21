@@ -1,8 +1,4 @@
 import websocket
-try:
-    import thread
-except ImportError:
-    import _thread as thread
 import logging
 import json
 import ast
@@ -11,11 +7,12 @@ from client import Client
 logging.basicConfig(level=logging.INFO)
 
 class StreamingClient(Client):
-    def __init__(self, options = {}):
+    def __init__(self, callback, options = {}):
         super(StreamingClient, self).__init__(options)
         self.endpoint = options['endpoint'] if 'endpoint' in options.keys() else 'wss://omnitrade.com:8080' 
         self.logger   = options['logger'] if 'logger' in options.keys() else logging
         websocket.enableTrace(True)
+        self.callback = callback
         self.ws = websocket.WebSocketApp(self.endpoint,
                                 on_message  =   self.on_message,
                                 on_error    =   self.on_error,
@@ -32,6 +29,7 @@ class StreamingClient(Client):
             self.ws.send(str(self.auth.signed_challenge(data)).encode())
         else:
             try:
+                self.callback(msg)
             except Exception as e:
                 self.logger.error("Failed to process message: {error}".format(error=e))
 

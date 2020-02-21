@@ -6,7 +6,6 @@ from ordered_dict import ordered_dict
 OMNITRADE_URL = 'https://omnitrade.io'
 class Client(object):
     def __init__(self, options={}):
-        print("Initialize")
         global OMNITRADE_URL
         self.auth = None
         self.__setup_auth_keys(options)

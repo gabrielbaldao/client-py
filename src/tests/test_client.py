@@ -16,3 +16,18 @@ class TestClientMethods(unittest.TestCase):
         response = public_client.get_public(market_path)
 
         self.assertEqual(response.json(), markets)
+
+    def test_post_request(self):
+        access_key = 'FUkESEYRJmO42MfqXcgJfm73GfIMw61qogExtcX7' #TODO improve this requests tests
+
+        client = Client({'access_key': access_key,'secret_key': '123456'})
+        response = client.post('/api/v2/orders/clear', {'side': 'sell' })
+
+        self.assertEqual(response.status_code, 201)
+
+    def test_post_request(self):
+        access_key = 'FUkESEYRJmO42MfqXcgJfm73GfIMw61qogExtcX7' #TODO improve this requests tests
+
+        client = Client({'access_key': access_key,'secret_key': '123456'})
+        response = client.get('/api/v2/order', {'id': 1 })
+        self.assertEqual(response.status_code, 404)

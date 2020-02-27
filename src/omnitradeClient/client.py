@@ -4,8 +4,8 @@ if '2.7' in python_version():
 else:
     import urllib.parse as urllib
 import requests
-from auth import Auth
-from ordered_dict import ordered_dict
+from .auth import Auth
+from .ordered_dict import ordered_dict
 
 OMNITRADE_URL = 'https://omnitrade.io'
 class Client(object):

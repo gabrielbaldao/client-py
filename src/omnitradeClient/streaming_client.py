@@ -2,7 +2,7 @@ import websocket
 import logging
 import json
 import ast
-from client import Client
+from .client import Client
 
 logging.basicConfig(level=logging.INFO)
 

@@ -1,8 +1,24 @@
 # client-py
 
-## Install
+## Install (Python 3)
 
+To install this package you should execute the command below. (but this is in tests yet)
 
+```console
+pip install git+https://github.com/OmniTrade/client-py.git
+```
+Another way to install this package, you should clone this repository with:
+
+```console
+git clone https://github.com/OmniTrade/client-py.git
+cd client-py
+```
+
+and to install, please execute:
+
+```console
+python3 setup.py install
+```
 
 ## Usage
 
@@ -67,7 +83,7 @@ private_client.post('/api/v2/order', market = 'btcbrl', side = 'buy', volume = '
 ```
 
 ### WebSocket
------- 
+------
 
 ```python
 streaming_client = StreamingClient(callbackFunction, access_key = '123456', secret_key = '123412')

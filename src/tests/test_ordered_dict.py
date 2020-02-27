@@ -1,5 +1,5 @@
 import unittest
-from omnitradeClient.ordered_dict import ordered_dict
+from src.omnitradeClient.ordered_dict import ordered_dict
 
 class TestOrderedDictMethods(unittest.TestCase):
 
@@ -7,4 +7,3 @@ class TestOrderedDictMethods(unittest.TestCase):
         dictionary = { 'a': 1, 'b': 2, 'c': 3}
         
         self.assertEqual(ordered_dict(dictionary), [('a', 1),('b', 2),('c', 3)])
-

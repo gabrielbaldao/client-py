@@ -1,33 +1,47 @@
 import unittest
 import json
-from nose.tools import assert_is_none, assert_list_equal
-from mock import patch, Mock
+from mock import patch
 
-from omnitradeClient.client import Client
+from src.omnitradeClient.client import Client
 
 OMNITRADE_URL = 'https://omnitrade.io'
 class TestClientMethods(unittest.TestCase):
-    
-    def test_get_public_valid_request(self):
+    @patch('src.omnitradeClient.client.requests.get')
+    def test_get_public_valid_request(self, mock_get):
         public_client = Client()
         market_path = '/api/v2/markets'
-        markets = [{"id": "btcbrl", "name": "BTC/BRL"}, {"id": "ltcbrl", "name": "LTC/BRL"}, {"id": "bchbrl", "name": "BCH/BRL"}, {"id": "btgbrl", "name": "BTG/BRL"}, {"id": "ethbrl", "name": "ETH/BRL"}, {"id": "dashbrl", "name": "DASH/BRL"}, {"id": "dcrbrl", "name": "DCR/BRL"}, {"id": "ltcbtc", "name": "LTC/BTC"}, {"id": "bchbtc", "name": "BCH/BTC"}, {"id": "btgbtc", "name": "BTG/BTC"}, {"id": "ethbtc", "name": "ETH/BTC"}, {"id": "dashbtc", "name": "DASH/BTC"}, {"id": "dcrbtc", "name": "DCR/BTC"}, {"id": "ltceth", "name": "LTC/ETH"}, {"id": "bcheth", "name": "BCH/ETH"}, {"id": "btgeth", "name": "BTG/ETH"}, {"id": "dasheth", "name": "DASH/ETH"}, {"id": "dcreth", "name": "DCR/ETH"}, {"id": "xrpbrl", "name": "XRP/BRL"}, {"id": "xrpbtc", "name": "XRP/BTC"}, {"id": "xrpeth", "name": "XRP/ETH"}, {"id": "mftbrl", "name": "MFT/BRL"}, {"id": "mftbtc", "name": "MFT/BTC"}, {"id": "mfteth", "name": "MFT/ETH"}, {"id": "btcusdc", "name": "BTC/USDC"}, {"id": "ltcusdc", "name": "LTC/USDC"}, {"id": "bchusdc", "name": "BCH/USDC"}, {"id": "btgusdc", "name": "BTG/USDC"}, {"id": "ethusdc", "name": "ETH/USDC"}, {"id": "dashusdc", "name": "DASH/USDC"}, {"id": "dcrusdc", "name": "DCR/USDC"}, {"id": "xrpusdc", "name": "XRP/USDC"}, {"id": "bnbbtc", "name": "BNB/BTC"}, {"id": "bnbusdc", "name": "BNB/USDC"}]
+        markets = [{"id": "btcbrl", "name": "BTC/BRL"}, {"id": "ltcbrl", "name": "LTC/BRL"}, {"id": "bchbrl", "name": "BCH/BRL"}]
+
+        mock_get.return_value.status_code = 200
+        mock_get.return_value.json.return_value = markets
 
         response = public_client.get_public(market_path)
 
         self.assertEqual(response.json(), markets)
+        self.assertEqual(response.status_code, 200)
 
-    def test_post_request(self):
-        access_key = 'FUkESEYRJmO42MfqXcgJfm73GfIMw61qogExtcX7' #TODO improve this requests tests
 
-        client = Client({'access_key': access_key,'secret_key': '123456'})
-        response = client.post('/api/v2/orders/clear', {'side': 'sell' })
+    @patch('src.omnitradeClient.client.requests.get')
+    def test_get_private_valid_request(self, mock_get):
+        client = Client(access_key='123456', secret_key='123456')
+        order_path = '/api/v2/markets'
+        orders = [{'id': 1917314, 'side': 'buy', 'ord_type': 'limit', 'price': '40000.0', 'avg_price': '40000.0', 'state': 'wait', 'market': 'btcbrl', 'created_at': '2019-08-21T17:06:11-03:00', 'volume': '0.5', 'remaining_volume': '0.4975', 'executed_volume': '0.0025', 'trades_count': 1}, {'id': 1917316, 'side': 'sell', 'ord_type': 'limit', 'price': '45000.0', 'avg_price': '45000.0', 'state': 'wait', 'market': 'btcbrl', 'created_at': '2019-08-21T17:07:32-03:00', 'volume': '0.6', 'remaining_volume': '0.597', 'executed_volume': '0.003', 'trades_count': 1}]
 
-        self.assertEqual(response.status_code, 201)
+        mock_get.return_value.json.return_value = orders
 
-    def test_post_request(self):
-        access_key = 'FUkESEYRJmO42MfqXcgJfm73GfIMw61qogExtcX7' #TODO improve this requests tests
+        response = client.get('api/v2/markets', market = 'btcbrl',price = '10',side = 'buy',tonce = 123,volume = 1)
 
-        client = Client({'access_key': access_key,'secret_key': '123456'})
-        response = client.get('/api/v2/order', {'id': 1 })
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json(), orders)
+
+    @patch('src.omnitradeClient.client.requests.post')
+    def test_post_request(self, mock_post):
+        order = [{'id': 1917316, 'side': 'sell', 'ord_type': 'limit', 'price': '45000.0', 'avg_price': '45000.0', 'state': 'wait', 'market': 'btcbrl', 'created_at': '2019-08-21T17:07:32-03:00', 'volume': '0.6', 'remaining_volume': '0.597', 'executed_volume': '0.003', 'trades_count': 1}]
+
+        client = Client(access_key = '123456', secret_key = '123456')
+
+        mock_post.return_value.json.return_value = order
+
+        response = client.post('/api/v2/orders/clear', side = 'sell')
+
+        self.assertEqual(response.json(), order)
+

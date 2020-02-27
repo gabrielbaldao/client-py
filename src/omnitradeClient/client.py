@@ -1,11 +1,15 @@
+from platform import python_version
+if '2.7' in python_version():
+    import urllib
+else:
+    import urllib.parse as urllib
 import requests
-import urllib
 from auth import Auth
 from ordered_dict import ordered_dict
 
 OMNITRADE_URL = 'https://omnitrade.io'
 class Client(object):
-    def __init__(self, options={}):
+    def __init__(self, **options):
         self.auth = None
         self.__setup_auth_keys(options)
 
@@ -17,13 +21,13 @@ class Client(object):
         return self.__get_request(uri, params)
 
 
-    def get(self, path, params={}):
+    def get(self, path, **params):
         self.__check_auth()
 
         uri, params = self.__parameters('GET',path, params)
         return self.__get_request(uri, params)
     
-    def post(self, path, params={}):
+    def post(self, path, **params):
         self.__check_auth()
 
         uri, params = self.__parameters('POST', path, params)
@@ -50,7 +54,7 @@ class Client(object):
 
     def __parameters(self, action, path, params):
         uri = '{endpoint}{path}'.format(endpoint=self.endpoint, path=path)
-        dict_params = self.auth.signed_params(action, path, params) if self.auth != None else params
+        dict_params = self.auth.signed_params(action, path, **params) if self.auth != None else params
 
         return uri, ordered_dict(dict_params)
 

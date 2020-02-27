@@ -1,5 +1,11 @@
+from platform import python_version
+if '2.7' in python_version():
+    import urllib
+else:
+    import urllib.parse as urllib
 import hashlib
-import urllib
+import hmac
+import time
 
 class Auth(object):
     def __init__(self, access_key, secret_key):
@@ -7,11 +13,11 @@ class Auth(object):
         self.secret_key = secret_key
     
     def signed_challenge(self, challenge):
-        signature = hashlib.pbkdf2_hmac('sha256', self.secret_key,"{access_key}{challenge}".format(access_key = self.access_key, challenge = challenge), 100000 )
+        signature = hmac.new(str(self.secret_key).encode(),"{access_key}{challenge}".format(access_key=self.access_key, challenge=challenge).encode(), hashlib.sha256).hexdigest()
         
         return { 'auth': { 'access_key': self.access_key, 'answer': signature } }
 
-    def signed_params(self, verb, path, params = {}):
+    def signed_params(self, verb, path, **params):
         params = self.__format_params(params)
 
         signature = self.__sign(verb, path, urllib.urlencode(params))
@@ -19,10 +25,10 @@ class Auth(object):
         return params
 
     def __sign(self, verb, path, params):
-        return hashlib.pbkdf2_hmac('sha256', self.secret_key, self.__payload(verb, path, params), 100000)
+        return hmac.new(self.secret_key.encode(), self.__payload(verb, path, params).encode(), hashlib.sha256).hexdigest()
 
     def __payload(self, verb, path, params):
-        return "#{verb}|#{path}|#{params}".format(verb = verb.upper(), path = path, params = params)
+        return "{verb}|{path}|{params}".format(verb = verb.upper(), path = path, params = params)
 
     def __format_params(self, params):
         params['access_key'] = self.access_key

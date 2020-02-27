@@ -7,7 +7,7 @@ import requests
 from .auth import Auth
 from .ordered_dict import ordered_dict
 
-OMNITRADE_URL = 'https://omnitrade.io'
+OMNITRADE_URL = 'https://omnitrade.io/'
 class Client(object):
     def __init__(self, **options):
         self.auth = None

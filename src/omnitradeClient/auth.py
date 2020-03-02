@@ -6,6 +6,7 @@ else:
 import hashlib
 import hmac
 import time
+from .ordered_dict import ordered_dict
 
 class Auth(object):
     def __init__(self, access_key, secret_key):
@@ -18,9 +19,9 @@ class Auth(object):
         return { 'auth': { 'access_key': self.access_key, 'answer': signature } }
 
     def signed_params(self, verb, path, **params):
-        params = self.__format_params(params)
+        sign_params = self.__format_params(params)
 
-        signature = self.__sign(verb, path, urllib.urlencode(params))
+        signature = self.__sign(verb, path, urllib.urlencode(sign_params))
         params['signature'] = signature 
         return params
 
@@ -33,4 +34,4 @@ class Auth(object):
     def __format_params(self, params):
         params['access_key'] = self.access_key
         params['tonce'] = int(time.time()) * 1000
-        return params
+        return ordered_dict(params)
